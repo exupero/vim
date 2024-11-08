@@ -1,0 +1,10 @@
+{
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportGeneralTypeIssues": "none",
+    "reportMissingTypeStubs": "none",
+    "reportOptionalCall": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalSubscript": "none"
+  },
+  "java.import.gradle.java.home": "/opt/homebrew/Cellar/openjdk@17/17.0.9/libexec/openjdk.jdk/Contents/Home"
+}
