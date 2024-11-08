@@ -21,9 +21,6 @@ Plug 'guns/vim-sexp'
 Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy'] }
 Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'python'], 'tag': 'v4.52.0' }
 Plug 'bakpakin/janet.vim', { 'for': 'janet' }
-"Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
-Plug 'Olical/aniseed'
-Plug 'Olical/nvim-local-fennel', { 'tag': 'v2.19.0' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -47,6 +44,13 @@ Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jparise/vim-graphql'
 Plug 'subnut/nvim-ghost.nvim'
-Plug 'Olical/nfnl'
 Plug 'gpanders/vim-medieval'
+
+" Fennel-related
+"Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
+Plug 'Olical/nfnl'
+Plug 'Olical/aniseed'
+" Install instructions for these don't include Plug, so I'm not sure what exactly nedes to be done...
+" Plug 'udayvir-singh/tangerine.nvim'
+" Plug 'udayvir-singh/hibiscus.nvim'
 call plug#end()
