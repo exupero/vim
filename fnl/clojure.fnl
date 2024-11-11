@@ -9,6 +9,16 @@
    autoload {client conjure.client
              eval conjure.eval}})
 
+(defcmd TestFile {:nargs 0} [_]
+  (eval.eval-str {:origin :dotfiles
+                  :code "(binding [clojure.test/*test-out* *out*]
+                           (com.mjdowney.rich-comment-tests/run-ns-tests! *ns*))"}))
+
+(defcmd ToggleParinfer {:nargs 0} [_]
+  (if (= "smart" vim.g.parinfer_mode)
+    (tset vim.g :parinfer_mode "paren")
+    (tset vim.g :parinfer_mode "smart")))
+
 (defn eval-query-match! [q]
   (let [root (-> (vim.treesitter.get_parser 0)
                  (: :parse)
@@ -25,13 +35,9 @@
   (u.update-file-and-reposition-cursor! #(vim.fn.execute "%!update-requires"))
   (eval-query-match! "((source (list_lit . value: (sym_lit) @f) @eval) (#any-of? @f \"ns\" \"deps/add-deps\" \"require\"))"))
 
-(defcmd ToggleParinfer {:nargs 0} [_]
-  (if (= "smart" vim.g.parinfer_mode)
-    (tset vim.g :parinfer_mode "paren")
-    (tset vim.g :parinfer_mode "smart")))
-
 (vim.keymap.set :n "<LocalLeader>c" ":ConjureConnect<CR>")
 (vim.keymap.set :n "<LocalLeader>p" ":ToggleParinfer<CR>")
+(vim.keymap.set :n "<LocalLeader>t" ":TestFile<CR>")
 (vim.keymap.set :n "<LocalLeader>u" ":UpdateRequires<CR>")
 
 (vim.keymap.set :n "<p" ":call CocActionAsync('runCommand', 'lsp-clojure-drag-backward')<CR>" {:buffer true})
