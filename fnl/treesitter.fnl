@@ -104,3 +104,7 @@
 (defn visual-start-node []
   (let [[_ row col] (vim.fn.getpos "'<")]
     (node-at-position row col)))
+
+(defn replace-node [node replacement]
+  (let [(start-row start-col end-row end-col) (node:range)]
+    (vim.api.nvim_buf_set_text 0 start-row start-col end-row end-col [replacement])))
