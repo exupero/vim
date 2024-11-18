@@ -1,6 +1,18 @@
 (fn defcmd [nm opts args & body]
   `(vim.api.nvim_create_user_command ,(tostring nm) (fn ,nm ,args ,(unpack body)) ,opts))
 
+(fn defcmd0 [nm args & body]
+  `(defcmd ,nm {:nargs 0} ,args ,(unpack body)))
+
+(fn defcmd1 [nm args & body]
+  `(defcmd ,nm {:nargs 1} ,args ,(unpack body)))
+
+(fn defcmd* [nm args & body]
+  `(defcmd ,nm {:nargs :*} ,args ,(unpack body)))
+
+(fn defcmd+ [nm args & body]
+  `(defcmd ,nm {:nargs :+} ,args ,(unpack body)))
+
 ; Copied from https://github.com/Olical/aniseed/blob/master/lua/aniseed/macros/autocmds.fnl
 
 (fn autocmd [event opt]
@@ -30,4 +42,8 @@
 {: autocmd
  : autocmds
  : augroup
- : defcmd}
+ : defcmd
+ : defcmd0
+ : defcmd1
+ : defcmd*
+ : defcmd+}
