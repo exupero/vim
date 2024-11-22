@@ -85,14 +85,14 @@
 
 (vim.cmd "command! -nargs=0 FnToConst call FnToConst()")
 
-(vim.keymap.set :n "<e" "<Plug>(move-node-back)")
-(vim.keymap.set :n ">e" "<Plug>(move-node-forward)")
-(vim.keymap.set :n "<I" ":call JavascriptInsertBefore()<CR>")
-(vim.keymap.set :n ">I" ":call JavascriptInsertAfter()<CR>")
+(vim.keymap.set :n :<e "<Plug>(move-node-back)")
+(vim.keymap.set :n :>e "<Plug>(move-node-forward)")
+(vim.keymap.set :n :<I ":call JavascriptInsertBefore()<CR>")
+(vim.keymap.set :n :>I ":call JavascriptInsertAfter()<CR>")
 
-(vim.keymap.set :n "<Leader>c" ":call JavascriptLogBefore(expand('<cword>'))<CR>")
-(vim.keymap.set :n "<Leader>d" ":call JavascriptDebugBefore()<CR>")
-(vim.keymap.set :n "<Leader>l" ":call JavascriptLogAfter(expand('<cword>'))<CR>")
+(vim.keymap.set :n :<Leader>c ":call JavascriptLogBefore(expand('<cword>'))<CR>")
+(vim.keymap.set :n :<Leader>d ":call JavascriptDebugBefore()<CR>")
+(vim.keymap.set :n :<Leader>l ":call JavascriptLogAfter(expand('<cword>'))<CR>")
 
-(vim.keymap.set :v "<Leader>c" ":call JavascriptLogBefore(VisualSelection())<CR>")
-(vim.keymap.set :v "<Leader>l" ":call JavascriptLogAfter(VisualSelection())<CR>")
+(vim.keymap.set :v :<Leader>c ":call JavascriptLogBefore(VisualSelection())<CR>")
+(vim.keymap.set :v :<Leader>l ":call JavascriptLogAfter(VisualSelection())<CR>")

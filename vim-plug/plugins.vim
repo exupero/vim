@@ -4,12 +4,13 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'godlygeek/tabular'
+Plug 'guns/vim-sexp', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
+Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-sexp-mappings-for-regular-people', { 'for': ['clojure', 'janet', 'fennel', 'hy'] }
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-rhubarb'
 Plug 'jpalardy/vim-slime'
@@ -17,8 +18,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'jiangmiao/auto-pairs', { 'tag': 'v2.0.0' }
-Plug 'guns/vim-sexp'
-Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy'] }
+Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
 Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'python'], 'tag': 'v4.52.0' }
 Plug 'bakpakin/janet.vim', { 'for': 'janet' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}

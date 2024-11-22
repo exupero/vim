@@ -35,10 +35,10 @@
   (u.update-file-and-reposition-cursor! #(vim.fn.execute "%!update-requires"))
   (eval-query-match! "((source (list_lit . value: (sym_lit) @f) @eval) (#any-of? @f \"ns\" \"deps/add-deps\" \"require\"))"))
 
-(vim.keymap.set :n "<LocalLeader>c" ":ConjureConnect<CR>")
-(vim.keymap.set :n "<LocalLeader>p" ":ToggleParinfer<CR>")
-(vim.keymap.set :n "<LocalLeader>t" ":TestFile<CR>")
-(vim.keymap.set :n "<LocalLeader>u" ":UpdateRequires<CR>")
+(vim.keymap.set :n :<LocalLeader>c ":ConjureConnect<CR>")
+(vim.keymap.set :n :<LocalLeader>p ":ToggleParinfer<CR>")
+(vim.keymap.set :n :<LocalLeader>t ":TestFile<CR>")
+(vim.keymap.set :n :<LocalLeader>u ":UpdateRequires<CR>")
 
-(vim.keymap.set :n "<p" ":call CocActionAsync('runCommand', 'lsp-clojure-drag-backward')<CR>" {:buffer true})
-(vim.keymap.set :n ">p" ":call CocActionAsync('runCommand', 'lsp-clojure-drag-forward')<CR>" {:buffer true})
+(vim.keymap.set :n :<p ":call CocActionAsync('runCommand', 'lsp-clojure-drag-backward')<CR>" {:buffer true})
+(vim.keymap.set :n :>p ":call CocActionAsync('runCommand', 'lsp-clojure-drag-forward')<CR>" {:buffer true})
