@@ -19,7 +19,7 @@ Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'jiangmiao/auto-pairs', { 'tag': 'v2.0.0' }
 Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
-Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'python'], 'tag': 'v4.52.0' }
+Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'python'], 'branch': 'main' }
 Plug 'bakpakin/janet.vim', { 'for': 'janet' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
