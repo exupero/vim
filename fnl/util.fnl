@@ -16,6 +16,9 @@
 (defn get-lines [start-row end-row]
   (vim.api.nvim_buf_get_lines 0 start-row end-row true))
 
+(defn get-current-line []
+  (vim.api.nvim_get_current_line))
+
 (defn set-lines! [start-row end-row lines]
   (vim.api.nvim_buf_set_lines 0 start-row end-row true lines))
 
@@ -31,6 +34,12 @@
         (replacement) (f line)]
     (set-lines! (a.dec row) row [replacement])))
 
+(defn update-all-lines! [f]
+  (let [lines (get-lines 0 -1)]
+    (each [i line (ipairs lines)]
+      (tset lines i (or (f line) line)))
+    (set-lines! 0 -1 lines)))
+
 (defn insert-mode! []
   (vim.cmd "startinsert"))
 
@@ -44,3 +53,7 @@
     (let [new-line-count (vim.api.nvim_buf_line_count 0)
           diff (- new-line-count line-count)]
       (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))))
+
+(defn insert-lines! [lines]
+  (let [[row col] (get-cursor)]
+    (set-lines! row row lines)))

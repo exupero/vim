@@ -11,8 +11,12 @@
 
 (defcmd TestFile {:nargs 0} [_]
   (eval.eval-str {:origin :dotfiles
-                  :code "(binding [clojure.test/*test-out* *out*]
-                           (com.mjdowney.rich-comment-tests/run-ns-tests! *ns*))"}))
+                  :code "(do
+                           (require '[babashka.deps :as deps])
+                           (deps/add-deps '{:deps {io.github.matthewdowney/rich-comment-tests {:mvn/version \"v1.0.3\"}}})
+                           (require 'com.mjdowney.rich-comment-tests)
+                           (binding [clojure.test/*test-out* *out*]
+                             (com.mjdowney.rich-comment-tests/run-ns-tests! *ns*)))"}))
 
 (defcmd ToggleParinfer {:nargs 0} [_]
   (if (= "smart" vim.g.parinfer_mode)
