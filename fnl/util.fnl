@@ -54,6 +54,22 @@
           diff (- new-line-count line-count)]
       (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))))
 
+(defn insert-lines-at! [[row col] lines]
+  (set-lines! row row lines))
+
 (defn insert-lines! [lines]
-  (let [[row col] (get-cursor)]
-    (set-lines! row row lines)))
+  (insert-lines-at! (get-cursor) lines))
+
+; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
+(defn visual-selection []
+  (let [s-start (vim.fn.getpos "'<")
+        s-end (vim.fn.getpos "'>")
+        n-lines (+ (math.abs (- (. s-end 2) (. s-start 2))) 1)
+        lines (vim.api.nvim_buf_get_lines 0 (- (. s-start 2) 1) (. s-end 2) false)]
+    (tset lines 1 (string.sub (. lines 1) (. s-start 3) (- 1)))
+    (if (= n-lines 1)
+      (tset lines n-lines
+            (string.sub (. lines n-lines) 1
+                        (+ (- (. s-end 3) (. s-start 3)) 1)))
+      (tset lines n-lines (string.sub (. lines n-lines) 1 (. s-end 3))))
+    (table.concat lines "\n")))

@@ -1,3 +1,5 @@
+(import-macros {: defcmd : defcmd0 : defcmd1} :macros)
+
 (module javascript
   {require {a aniseed.core
             str aniseed.string
@@ -22,14 +24,6 @@
    [#(ts.ancestor-by-type $1 :jsx_self_closing_element) insert-at-start #(insert-at-end $1 -1)]
    [#(ts.ancestor-by-type $1 :jsx_opening_element)      insert-at-start #(insert-at-end $1 0)]])
 
-(defn insert-before []
-  (u.insert-before insert-handlers))
-(util.fn-bridge :JavascriptInsertBefore :javascript :insert-before {})
-
-(defn insert-after []
-  (u.insert-after insert-handlers))
-(util.fn-bridge :JavascriptInsertAfter :javascript :insert-after {})
-
 (def swappable-ancestors
   [#(= ($1:type) :jsx_text)
    #(= ($1:type) :jsx_attribute)
@@ -39,17 +33,9 @@
   [#(not ($1:named))
    #(and (= ($1:type) :jsx_text) (str.blank? (ts.node-text $1)))])
 
-(defn move-node-back []
-  (ts.move-node-back swappable-ancestors skippable-siblings))
-(util.fn-bridge :JavascriptMoveNodeBack :javascript :move-node-back {})
-(u.repeatable :move-node-back ":call JavascriptMoveNodeBack()<CR>")
+; Refactoring
 
-(defn move-node-forward []
-  (ts.move-node-forward swappable-ancestors skippable-siblings))
-(util.fn-bridge :JavascriptMoveNodeForward :javascript :move-node-forward {})
-(u.repeatable :move-node-forward ":call JavascriptMoveNodeForward()<CR>")
-
-(defn fn->const []
+(defcmd0 JavascriptFunctionToConst []
   (let [node (ts.ancestor-by-type (ts.cursor-node) :function_declaration)
         (r1 c1) (node:start)
         (r2 c2) (node:end_)
@@ -65,25 +51,44 @@
     (table.insert lines (.. indent "};"))
     (u.set-lines! r1 (a.inc r2) lines)
     (u.set-cursor! (a.inc r1) c1)))
-(util.fn-bridge :FnToConst :javascript :fn->const {})
 
-(defn log-stmt [s]
-  (let [s (string.gsub s "\"" "\\\"")]
-    (.. "console.log(\"%c%s\", "
-        "\"color:mediumseagreen\", "
-        "\"" s "\"); console.log(" s ");")))
+(defcmd0 JavascriptInsertBefore []
+  (u.insert-before insert-handlers))
 
-(defn log-expr [s]
-  (let [src (string.gsub s "\n" "\\n")]
-    (str.split
-      (.. "(x=>{console.log(\"%c%s\", "
-          "\"color:mediumseagreen\", "
-          "\"" src "\"); console.log(x); return x})(" s ")")
-      "\n")))
+(defcmd0 JavascriptInsertAfter []
+  (u.insert-after insert-handlers))
 
-(util.fn-bridge :JavascriptLogBefore :javascript :log-before {:range true})
+(defcmd0 JavascriptMoveNodeBack []
+  (ts.move-node-back swappable-ancestors skippable-siblings))
+(u.repeatable :move-node-back ":call JavascriptMoveNodeBack()<CR>")
 
-(vim.cmd "command! -nargs=0 FnToConst call FnToConst()")
+(defcmd0 JavascriptMoveNodeForward []
+  (ts.move-node-forward swappable-ancestors skippable-siblings))
+(u.repeatable :move-node-forward ":call JavascriptMoveNodeForward()<CR>")
+
+; Debugging
+
+(defn log-text-code [text]
+  (.. "console.log(\"%c%s\", "
+      "\"color:mediumseagreen;font-weight:bold\", "
+      "\"" (string.gsub text "\"" "\\\"") "\", "
+      text ");"))
+
+(defn log-text-at! [mark text]
+  (let [[row] (vim.api.nvim_buf_get_mark 0 mark)
+        [line] (u.get-lines (a.dec row) row)]
+    (u.insert-lines-at!
+      [(a.dec row) 0]
+      [(.. (string.match line "(%s+)")
+           (log-text-code text))])))
+
+(defcmd0 JavascriptLogWord []
+  (log-text-at! :u (vim.fn.expand :<cword>)))
+
+(defcmd JavascriptLogSelection {:nargs 0 :range true} []
+  (log-text-at! :u (u.visual-selection)))
+
+; Keymappings
 
 (vim.keymap.set :n :<e "<Plug>(move-node-back)")
 (vim.keymap.set :n :>e "<Plug>(move-node-forward)")
@@ -91,8 +96,9 @@
 (vim.keymap.set :n :>I ":call JavascriptInsertAfter()<CR>")
 
 (vim.keymap.set :n :<Leader>c ":call JavascriptLogBefore(expand('<cword>'))<CR>")
-(vim.keymap.set :n :<Leader>d ":call JavascriptDebugBefore()<CR>")
+(vim.keymap.set :n :<Leader>d ":JavascriptLogWord<CR>")
 (vim.keymap.set :n :<Leader>l ":call JavascriptLogAfter(expand('<cword>'))<CR>")
 
 (vim.keymap.set :v :<Leader>c ":call JavascriptLogBefore(VisualSelection())<CR>")
+(vim.keymap.set :v :<Leader>d ":JavascriptLogSelection<CR>")
 (vim.keymap.set :v :<Leader>l ":call JavascriptLogAfter(VisualSelection())<CR>")
