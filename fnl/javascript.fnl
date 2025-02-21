@@ -68,25 +68,17 @@
 
 ; Debugging
 
-(defn log-text-code [text]
+(defn logging-code [text]
   (.. "console.log(\"%c%s\", "
       "\"color:mediumseagreen;font-weight:bold\", "
       "\"" (string.gsub text "\"" "\\\"") "\", "
       text ");"))
 
-(defn log-text-at! [mark text]
-  (let [[row] (vim.api.nvim_buf_get_mark 0 mark)
-        [line] (u.get-lines (a.dec row) row)]
-    (u.insert-lines-at!
-      [(a.dec row) 0]
-      [(.. (string.match line "(%s+)")
-           (log-text-code text))])))
-
 (defcmd0 JavascriptLogWord []
-  (log-text-at! :u (vim.fn.expand :<cword>)))
+  (u.insert-line-before-mark! :u (logging-code (vim.fn.expand :<cword>))))
 
 (defcmd JavascriptLogSelection {:nargs 0 :range true} []
-  (log-text-at! :u (u.visual-selection)))
+  (u.insert-line-before-mark! :u (logging-code (u.visual-selection))))
 
 ; Keymappings
 

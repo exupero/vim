@@ -60,6 +60,13 @@
 (defn insert-lines! [lines]
   (insert-lines-at! (get-cursor) lines))
 
+(defn insert-line-before-mark! [mark line]
+  (let [[row] (vim.api.nvim_buf_get_mark 0 mark)
+        [current-line] (get-lines (a.dec row) row)]
+    (insert-lines-at!
+      [(a.dec row) 0]
+      [(.. (string.match current-line "(%s+)") line)])))
+
 ; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
 (defn visual-selection []
   (let [s-start (vim.fn.getpos "'<")
