@@ -21,7 +21,7 @@
       (let [selection (action-state.get_selected_entry)]
         (vim.cmd (.. "tabnew +" selection.value.line " " selection.value.filename))))))
 
-(defn pick-location [title results entry-maker]
+(defn pick-location [title results entry-maker layout-config]
   (: (pickers.new {}
                   {:prompt_title title
                    :finder (finders.new_table
@@ -31,7 +31,8 @@
                    :previewer (conf.values.qflist_previewer {})
                    :attach_mappings (fn [prompt-bufnr map]
                                       (open-location-keybindings prompt-bufnr map)
-                                      true)})
+                                      true)
+                   :layout_config layout-config})
      :find))
 
 (defn ls [title dir]

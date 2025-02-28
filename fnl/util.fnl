@@ -16,6 +16,10 @@
 (defn get-lines [start-row end-row]
   (vim.api.nvim_buf_get_lines 0 start-row end-row true))
 
+(defn get-all-lines []
+  (let [lines (vim.api.nvim_buf_get_lines 0 0 (vim.api.nvim_buf_line_count 0) false)]
+    (table.concat lines "\n")))
+
 (defn get-current-line []
   (vim.api.nvim_get_current_line))
 
