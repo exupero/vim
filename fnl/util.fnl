@@ -50,14 +50,13 @@
 (defn repeatable [nm cmd]
    (vim.keymap.set :n (.. "<Plug>(" nm ")") (.. cmd ":silent! call repeat#set(\"\\<Plug>(" nm ")\")<CR>")))
 
-(defn update-file-and-reposition-cursor! [f]
+(defn update-file-and-move-cursor-down! [f]
   (let [line-count (vim.api.nvim_buf_line_count 0)
         [row col] (vim.api.nvim_win_get_cursor 0)]
     (f)
-    ; Useful when rows above the cursor or removed, but that's not guaranteed
-    ; (let [new-line-count (vim.api.nvim_buf_line_count 0)
-    ;       diff (- new-line-count line-count)]
-    ;   (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))
+    (let [new-line-count (vim.api.nvim_buf_line_count 0)
+          diff (- new-line-count line-count)]
+      (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))
     (vim.api.nvim_win_set_cursor 0 [row col])))
 
 (defn insert-lines-at! [[row col] lines]
