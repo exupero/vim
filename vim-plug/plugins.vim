@@ -45,7 +45,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jparise/vim-graphql'
 Plug 'subnut/nvim-ghost.nvim'
 Plug 'gpanders/vim-medieval'
-" Plug 'github/copilot.vim'
+Plug 'github/copilot.vim'
 
 " Fennel-related
 "Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
