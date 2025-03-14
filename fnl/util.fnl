@@ -50,7 +50,7 @@
 (defn repeatable [nm cmd]
    (vim.keymap.set :n (.. "<Plug>(" nm ")") (.. cmd ":silent! call repeat#set(\"\\<Plug>(" nm ")\")<CR>")))
 
-(defn update-file-and-move-cursor-down! [f]
+(defn update-file-and-move-cursor! [f]
   (let [line-count (vim.api.nvim_buf_line_count 0)
         [row col] (vim.api.nvim_win_get_cursor 0)]
     (f)
