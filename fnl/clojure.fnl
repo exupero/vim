@@ -40,7 +40,7 @@
                           :code (vim.treesitter.get_node_text node 0)}))))))
 
 (defcmd UpdateRequires {:nargs 0} [_]
-  (u.update-file-and-move-cursor-down! #(vim.fn.execute "%!update-requires"))
+  (u.update-file-and-move-cursor! #(vim.fn.execute "%!update-requires"))
   (eval-query-match! "((source (list_lit . value: (sym_lit) @f) @eval) (#any-of? @f \"ns\" \"deps/add-deps\" \"require\"))"))
 
 (tset vim.g :conjure#mapping#log_vsplit :lc)
