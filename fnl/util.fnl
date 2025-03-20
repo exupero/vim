@@ -56,8 +56,7 @@
     (f)
     (let [new-line-count (vim.api.nvim_buf_line_count 0)
           diff (- new-line-count line-count)]
-      (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))
-    (vim.api.nvim_win_set_cursor 0 [row col])))
+      (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))))
 
 (defn insert-lines-at! [[row col] lines]
   (set-lines! row row lines))
