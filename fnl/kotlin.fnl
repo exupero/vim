@@ -8,8 +8,10 @@
 
 (defn logging-code [text]
   (.. "File(\"debug.log\").appendText(\""
-      (string.gsub text "\"" "\\\"")
-      "=${" text "}\\n\")"))
+      (-> text
+          (string.gsub "\"" "\\\"")
+          (string.gsub "\n" "\\n"))
+      "=${" (string.gsub text "\n" " ") "}\\n\")"))
 
 (defcmd0 KotlinLogWord []
   (u.insert-line-before-mark! :u (logging-code (vim.fn.expand :<cword>))))
