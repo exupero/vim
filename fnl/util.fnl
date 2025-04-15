@@ -64,12 +64,21 @@
 (defn insert-lines! [lines]
   (insert-lines-at! (get-cursor) lines))
 
-(defn insert-line-before-mark! [mark line]
-  (let [[row] (vim.api.nvim_buf_get_mark 0 mark)
-        [current-line] (get-lines (a.dec row) row)]
+(defn insert-line-at-location! [[row] line]
+  (let [[current-line] (get-lines (a.dec row) row)]
     (insert-lines-at!
       [(a.dec row) 0]
       [(.. (string.match current-line "(%s+)") line)])))
+
+(defn insert-line-before-cursor! [line]
+  (insert-line-at-location! (vim.api.nvim_win_get_cursor 0) line))
+
+(defn insert-line-after-cursor! [line]
+  (let [[row] (vim.api.nvim_win_get_cursor 0)]
+    (insert-line-at-location! [(a.inc row)] line)))
+
+(defn insert-line-before-mark! [mark line]
+  (insert-line-at-location! (vim.api.nvim_buf_get_mark 0 mark) line))
 
 ; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
 (defn visual-selection []

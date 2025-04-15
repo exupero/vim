@@ -74,11 +74,23 @@
       "\"" (string.gsub text "\"" "\\\"") "\", "
       text ");"))
 
-(defcmd0 JavascriptLogWord []
-  (u.insert-line-before-mark! :u (logging-code (vim.fn.expand :<cword>))))
+(defcmd0 JavascriptLogWordBeforeCursor []
+  (u.insert-line-before-cursor! (logging-code (vim.fn.expand :<cword>))))
 
-(defcmd JavascriptLogSelection {:nargs 0 :range true} []
-  (u.insert-line-before-mark! :u (logging-code (u.visual-selection))))
+(defcmd0 JavascriptLogWordAfterCursor []
+  (u.insert-line-after-cursor! (logging-code (vim.fn.expand :<cword>))))
+
+(defcmd1 JavascriptLogWordBeforeMark [{:args mark}]
+  (u.insert-line-before-mark! mark (logging-code (vim.fn.expand :<cword>))))
+
+(defcmd JavascriptLogSelectionBeforeCursor {:nargs 0 :range true} []
+  (u.insert-line-after-cursor! (logging-code (u.visual-selection))))
+
+(defcmd JavascriptLogSelectionAfterCursor {:nargs 0 :range true} []
+  (u.insert-line-after-cursor! (logging-code (u.visual-selection))))
+
+(defcmd JavascriptLogSelectionBeforeMark {:nargs 1 :range true} [{:args mark}]
+  (u.insert-line-before-mark! mark (logging-code (u.visual-selection))))
 
 ; Keymappings
 
@@ -87,10 +99,12 @@
 (vim.keymap.set :n :<I ":call JavascriptInsertBefore()<CR>")
 (vim.keymap.set :n :>I ":call JavascriptInsertAfter()<CR>")
 
-(vim.keymap.set :n :<Leader>c ":call JavascriptLogBefore(expand('<cword>'))<CR>")
-(vim.keymap.set :n :<Leader>d ":JavascriptLogWord<CR>")
+(vim.keymap.set :n :<Leader>c ":JavascriptLogWordBeforeCursor<CR>")
+(vim.keymap.set :n :<Leader>d ":JavascriptLogWordBeforeMark u<CR>")
+(vim.keymap.set :n :<Leader>w ":JavascriptLogWordAfterCursor<CR>")
 (vim.keymap.set :n :<Leader>l ":call JavascriptLogAfter(expand('<cword>'))<CR>")
 
-(vim.keymap.set :v :<Leader>c ":call JavascriptLogBefore(VisualSelection())<CR>")
-(vim.keymap.set :v :<Leader>d ":JavascriptLogSelection<CR>")
+(vim.keymap.set :v :<Leader>c ":JavascriptLogSelectionBeforeCursor<CR>")
+(vim.keymap.set :v :<Leader>d ":JavascriptLogSelectionBeforeMark u<CR>")
+(vim.keymap.set :v :<Leader>w ":JavascriptLogSelectionAfterCursor<CR>")
 (vim.keymap.set :v :<Leader>l ":call JavascriptLogAfter(VisualSelection())<CR>")
