@@ -84,7 +84,7 @@
   (u.insert-line-before-mark! mark (logging-code (vim.fn.expand :<cword>))))
 
 (defcmd JavascriptLogSelectionBeforeCursor {:nargs 0 :range true} []
-  (u.insert-line-after-cursor! (logging-code (u.visual-selection))))
+  (u.insert-line-before-cursor! (logging-code (u.visual-selection))))
 
 (defcmd JavascriptLogSelectionAfterCursor {:nargs 0 :range true} []
   (u.insert-line-after-cursor! (logging-code (u.visual-selection))))

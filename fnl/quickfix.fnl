@@ -47,7 +47,7 @@
 
 (defn rg [q]
   (let [entries []
-        str (vim.fn.system (.. "rg -nS '" q "'"))]
+        str (vim.fn.system (.. "rg -nS \"" (string.gsub q "\"" "\\\"") "\""))]
     (each [fname lnum text (str:gmatch "([^:\r\n]+):([0-9]+):([^\r\n]+)")]
       (table.insert entries {:filename fname
                              :module fname
