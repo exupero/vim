@@ -71,7 +71,7 @@
 (defn logging-code [text]
   (.. "console.log(\"%c%s\", "
       "\"color:mediumseagreen;font-weight:bold\", "
-      "\"" (string.gsub text "\"" "\\\"") "\", "
+      "\"" vim.g.logging_prefix (string.gsub text "\"" "\\\"") "\", "
       text ");"))
 
 (defcmd0 JavascriptLogWordBeforeCursor []
