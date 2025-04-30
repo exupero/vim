@@ -10,6 +10,7 @@
              eval conjure.eval}})
 
 (defcmd TestFile {:nargs 0} [_]
+  (vim.cmd "silent! write")
   (eval.eval-str {:origin :dotfiles
                   :code "(do
                            (require '[babashka.deps :as deps])
@@ -19,7 +20,7 @@
                              (com.mjdowney.rich-comment-tests/run-ns-tests! *ns*)))"}))
 
 (defcmd ToggleParinfer {:nargs 0} [_]
-  (if (= "smart" vim.g.parinfer_mode)
+  (if (= vim.g.parinfer_mode "smart")
     (tset vim.g :parinfer_mode "paren")
     (tset vim.g :parinfer_mode "smart")))
 

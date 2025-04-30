@@ -58,6 +58,10 @@
           diff (- new-line-count line-count)]
       (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))))
 
+(defn indent-at-line [row]
+  (let [[line] (get-lines (a.dec row) row)]
+    (string.match line "(%s+)")))
+
 (defn insert-lines-at! [[row col] lines]
   (set-lines! row row lines))
 
@@ -65,10 +69,11 @@
   (insert-lines-at! (get-cursor) lines))
 
 (defn insert-line-at-location! [[row] line]
-  (let [[current-line] (get-lines (a.dec row) row)]
-    (insert-lines-at!
-      [(a.dec row) 0]
-      [(.. (string.match current-line "(%s+)") line)])))
+  (insert-lines-at!
+    [(a.dec row) 0]
+    [(.. (or (indent-at-line (a.dec row))
+             (indent-at-line (- row 2)))
+         line)]))
 
 (defn insert-line-before-cursor! [line]
   (insert-line-at-location! (vim.api.nvim_win_get_cursor 0) line))
