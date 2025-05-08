@@ -68,22 +68,20 @@
 (defn insert-lines! [lines]
   (insert-lines-at! (get-cursor) lines))
 
-(defn insert-line-at-location! [[row] line]
-  (insert-lines-at!
-    [(a.dec row) 0]
-    [(.. (or (indent-at-line (a.dec row))
-             (indent-at-line (- row 2)))
-         line)]))
+(defn insert-line-at-location! [row line indent]
+  (insert-lines-at! [(a.dec row) 0] [(.. indent line)]))
 
 (defn insert-line-before-cursor! [line]
-  (insert-line-at-location! (vim.api.nvim_win_get_cursor 0) line))
+  (let [[row] (vim.api.nvim_win_get_cursor 0)]
+    (insert-line-at-location! row line (indent-at-line row))))
 
 (defn insert-line-after-cursor! [line]
   (let [[row] (vim.api.nvim_win_get_cursor 0)]
-    (insert-line-at-location! [(a.inc row)] line)))
+    (insert-line-at-location! (a.inc row) line (indent-at-line (a.inc row)))))
 
 (defn insert-line-before-mark! [mark line]
-  (insert-line-at-location! (vim.api.nvim_buf_get_mark 0 mark) line))
+  (let [[row] (vim.api.nvim_buf_get_mark 0 mark)]
+    (insert-line-at-location! row line (indent-at-line row))))
 
 ; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
 (defn visual-selection []
