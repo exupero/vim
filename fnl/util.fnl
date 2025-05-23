@@ -77,7 +77,9 @@
 
 (defn insert-line-after-cursor! [line]
   (let [[row] (vim.api.nvim_win_get_cursor 0)]
-    (insert-line-at-location! (a.inc row) line (indent-at-line (a.inc row)))))
+    (insert-line-at-location! (a.inc row) line
+                              (or (indent-at-line (a.inc row))
+                                  (indent-at-line row)))))
 
 (defn insert-line-before-mark! [mark line]
   (let [[row] (vim.api.nvim_buf_get_mark 0 mark)]
