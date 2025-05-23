@@ -24,9 +24,13 @@
     (tset vim.g :parinfer_mode "paren")
     (tset vim.g :parinfer_mode "smart")))
 
-(defcmd ConjureLogPane {:nargs 0} [_]
+(defcmd ConjureLogHPane {:nargs 0} [_]
+  (vim.cmd "ConjureLogSplit")
+  (vim.cmd "setlocal wrap"))
+
+(defcmd ConjureLogVPane {:nargs 0} [_]
   (vim.cmd "ConjureLogVSplit")
-  (vim.cmd "set wrap"))
+  (vim.cmd "setlocal wrap"))
 
 (defn eval-query-match! [q]
   (let [root (-> (vim.treesitter.get_parser 0)
@@ -44,9 +48,11 @@
   (u.update-file-and-move-cursor! #(vim.fn.execute "%!update-requires"))
   (eval-query-match! "((source (list_lit . value: (sym_lit) @f) @eval) (#any-of? @f \"ns\" \"deps/add-deps\" \"require\"))"))
 
-(tset vim.g :conjure#mapping#log_vsplit :lc)
+(tset vim.g :conjure#mapping#log_split "")
+(tset vim.g :conjure#mapping#log_vsplit "")
 (vim.keymap.set :n :<LocalLeader>c ":ConjureConnect<CR>")
-(vim.keymap.set :n :<LocalLeader>lv ":ConjureLogPane<CR>")
+(vim.keymap.set :n :<LocalLeader>ls ":ConjureLogHPane<CR>")
+(vim.keymap.set :n :<LocalLeader>lv ":ConjureLogVPane<CR>")
 (vim.keymap.set :n :<LocalLeader>p ":ToggleParinfer<CR>")
 (vim.keymap.set :n :<LocalLeader>t ":TestFile<CR>")
 (vim.keymap.set :n :<LocalLeader>u ":UpdateRequires<CR>")
