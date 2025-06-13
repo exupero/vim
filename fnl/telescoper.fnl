@@ -1,15 +1,14 @@
-(module telescoper
-  {require {a aniseed.core
-            str aniseed.string
-            nvim aniseed.nvim
-            actions telescope.actions
-            action-state telescope.actions.state
-            conf telescope.config
-            finders telescope.finders
-            pickers telescope.pickers
-            u util}})
+(local a (require :aniseed.core))
+(local str (require :aniseed.string))
+(local nvim (require :aniseed.nvim))
+(local actions (require :telescope.actions))
+(local action-state (require :telescope.actions.state))
+(local conf (require :telescope.config))
+(local finders (require :telescope.finders))
+(local pickers (require :telescope.pickers))
+(local u (require :util))
 
-(defn open-location-keybindings [prompt-bufnr map]
+(fn open-location-keybindings [prompt-bufnr map]
   (actions.select_default:replace
     (fn []
       (actions.close prompt-bufnr)
@@ -21,7 +20,7 @@
       (let [selection (action-state.get_selected_entry)]
         (vim.cmd (.. "tabnew +" selection.value.line " " selection.value.filename))))))
 
-(defn pick-location [title results entry-maker layout-config]
+(fn pick-location [title results entry-maker layout-config]
   (: (pickers.new {}
                   {:prompt_title title
                    :finder (finders.new_table
@@ -35,7 +34,7 @@
                    :layout_config layout-config})
      :find))
 
-(defn ls [title dir]
+(fn ls [title dir]
   (pick-location title
     (u.split-lines (vim.fn.system (.. "ls -at " dir)))
     (fn [entry]
@@ -45,7 +44,7 @@
        :lnum 1
        :ordinal entry})))
 
-(defn find [title dir args]
+(fn find [title dir args]
   (pick-location title
     (u.split-lines (vim.fn.system (.. "cd " dir " && find * -type f " args)))
     (fn [entry]
@@ -55,7 +54,7 @@
        :lnum 1
        :ordinal entry})))
 
-(defn system-loc [title cmd]
+(fn system-loc [title cmd]
   (pick-location title
     (vim.json.decode (vim.fn.system cmd))
     (fn [entry]
@@ -65,7 +64,7 @@
        :lnum entry.line
        :ordinal entry.text})))
 
-(defn template [title cmd templater]
+(fn template [title cmd templater]
   (: (pickers.new {}
                   {:prompt_title title
                    :finder (finders.new_table
@@ -90,3 +89,9 @@
                                             (u.set-cursor! (a.inc line) col))))
                                       true)})
      :find))
+
+{: pick-location
+ : ls
+ : find
+ : system-loc
+ : template}

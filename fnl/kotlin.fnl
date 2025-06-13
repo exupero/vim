@@ -1,12 +1,11 @@
 (import-macros {: defcmd : defcmd0 : defcmd1} :macros)
 
-(module kotlin
-  {require {a aniseed.core
-            u util}})
+(local a (require :aniseed.core))
+(local u (require :util))
 
 ; Debugging
 
-(defn logging-code [text]
+(fn logging-code [text]
   (.. "File(\"debug.log\").appendText(\""
       (-> text
           (string.gsub "\"" "\\\"")

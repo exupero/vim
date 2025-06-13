@@ -1,10 +1,12 @@
-(module git
-  {require {str aniseed.string
-            util aniseed.nvim.util}})
+(local str (require :aniseed.string))
+(local util (require :aniseed.nvim.util))
 
-(defn root []
+(fn root []
   (let [(dir) (str.trim (vim.fn.system "git rev-parse --show-toplevel"))]
     dir))
 
-(defn repo-path [path]
+(fn repo-path [path]
   (str.trim (vim.fn.system (.. "git path " path))))
+
+{: root
+ : repo-path}

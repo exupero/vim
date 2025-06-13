@@ -1,13 +1,13 @@
 (import-macros {: defcmd} :macros)
 
-(module clojure
-  {require {a aniseed.core
-            nvim aniseed.nvim
-            util aniseed.nvim.util
-            u util
-            ts treesitter}
-   autoload {client conjure.client
-             eval conjure.eval}})
+(local a (require :aniseed.core))
+(local nvim (require :aniseed.nvim))
+(local util (require :aniseed.nvim.util))
+(local u (require :util))
+(local ts (require :treesitter))
+(local {: autoload} (require :nfnl.module))
+(local client (autoload :conjure.client))
+(local eval (autoload :conjure.eval))
 
 (defcmd TestFile {:nargs 0} [_]
   (vim.cmd "silent! write")
@@ -32,7 +32,7 @@
   (vim.cmd "ConjureLogVSplit")
   (vim.cmd "setlocal wrap"))
 
-(defn eval-query-match! [q]
+(fn eval-query-match! [q]
   (let [root (-> (vim.treesitter.get_parser 0)
                  (: :parse)
                  a.first
@@ -42,7 +42,7 @@
       (each [id node (pairs m)]
         (when (= "eval" (. q.captures id))
           (eval.eval-str {:origin :dotfiles
-                          :code (vim.treesitter.get_node_text node 0)}))))))
+                          :code (vim.treesitter.get_node_text (a.first node) 0)}))))))
 
 (defcmd UpdateRequires {:nargs 0} [_]
   (u.update-file-and-move-cursor! #(vim.fn.execute "%!update-requires"))

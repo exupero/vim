@@ -48,7 +48,8 @@ Plug 'gpanders/vim-medieval'
 Plug 'github/copilot.vim'
 
 " Fennel-related
-"Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
+Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
+" Plug 'atweiden/vim-fennel'
 Plug 'Olical/nfnl'
 Plug 'Olical/aniseed'
 " Install instructions for these don't include Plug, so I'm not sure what exactly nedes to be done...

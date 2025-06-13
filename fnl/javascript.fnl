@@ -1,35 +1,34 @@
 (import-macros {: defcmd : defcmd0 : defcmd1} :macros)
 
-(module javascript
-  {require {a aniseed.core
-            str aniseed.string
-            util aniseed.nvim.util
-            ts treesitter
-            u util}})
+(local a (require :aniseed.core))
+(local str (require :aniseed.string))
+(local util (require :aniseed.nvim.util))
+(local ts (require :treesitter))
+(local u (require :util))
 
-(defn insert-at-start [node]
+(fn insert-at-start [node]
   (let [(row col) (node:start)
         [line] (u.get-lines row (a.inc row))]
     (u.insert-mode!)
     (u.set-cursor! (a.inc row) (a.inc col))))
 
-(defn insert-at-end [node offset]
+(fn insert-at-end [node offset]
   (let [(row col) (node:end_)
         [line] (u.get-lines row (a.inc row))]
     (u.insert-mode!)
     (u.set-cursor! (a.inc row) (+ (a.dec col) offset))))
 
-(def insert-handlers
+(local insert-handlers
   [[#(ts.ancestor-by-type $1 :jsx_text)                 insert-at-start #(insert-at-end $1 1)]
    [#(ts.ancestor-by-type $1 :jsx_self_closing_element) insert-at-start #(insert-at-end $1 -1)]
    [#(ts.ancestor-by-type $1 :jsx_opening_element)      insert-at-start #(insert-at-end $1 0)]])
 
-(def swappable-ancestors
+(local swappable-ancestors
   [#(= ($1:type) :jsx_text)
    #(= ($1:type) :jsx_attribute)
    #(= ($1:type) :jsx_element)])
 
-(def skippable-siblings
+(local skippable-siblings
   [#(not ($1:named))
    #(and (= ($1:type) :jsx_text) (str.blank? (ts.node-text $1)))])
 
@@ -68,7 +67,7 @@
 
 ; Debugging
 
-(defn logging-code [text]
+(fn logging-code [text]
   (.. "console.log(\"%c%s\", "
       "\"color:mediumseagreen;font-weight:bold\", "
       "\"" vim.g.logging_prefix (string.gsub text "\"" "\\\"") "\", "

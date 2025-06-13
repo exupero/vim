@@ -1,24 +1,23 @@
-(module quickfix
-  {require {a aniseed.core
-            nvim aniseed.nvim}})
+(local a (require :aniseed.core))
+(local nvim (require :aniseed.nvim))
 
-(defn- sort-by-file-and-line [a b]
+(fn sort-by-file-and-line [a b]
   (or (< a.filename b.filename)
       (and (= a.filename b.filename)
            (< a.lnum b.lnum))))
 
-(defn show! [title entries sort?]
+(fn show! [title entries sort?]
   (let [entries (a.vals entries)]
     (when sort?
       (table.sort entries sort-by-file-and-line))
     (vim.fn.setqflist [] :r {:title title :items entries})
     (nvim.ex.copen)))
 
-(defn filter! [pred]
+(fn filter! [pred]
   (let [entries (vim.fn.getqflist)]
     (vim.fn.setqflist [] :r {:items (a.filter pred entries)})))
 
-(defn tsquery [capture-name q]
+(fn tsquery [capture-name q]
   (let [query (vim.treesitter.parse_query vim.bo.filetype q)
         node (-> (vim.treesitter.get_parser 0)
                  (: :parse)
@@ -36,7 +35,7 @@
                  :text (vim.treesitter.get_node_text node 0)}))))
     (a.vals unique-entries)))
 
-(defn parse-locations [stdout]
+(fn parse-locations [stdout]
   (let [entries []]
     (each [fname lnum text (stdout:gmatch "([^:\r\n]+):([0-9]+):([^\r\n]+)")]
       (table.insert entries {:filename fname
@@ -45,7 +44,7 @@
                              :text text}))
     entries))
 
-(defn rg [q]
+(fn rg [q]
   (let [entries []
         str (vim.fn.system (.. "rg -nS \"" (string.gsub q "\"" "\\\"") "\""))]
     (each [fname lnum text (str:gmatch "([^:\r\n]+):([0-9]+):([^\r\n]+)")]
@@ -55,3 +54,9 @@
                              :col (string.find text q)
                              :text text}))
     entries))
+
+{: show!
+ : filter!
+ : tsquery
+ : parse-locations
+ : rg}

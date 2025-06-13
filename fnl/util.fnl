@@ -1,56 +1,55 @@
-(module util
-  {require {a aniseed.core
-            str aniseed.string
-            ts treesitter}})
+(local a (require :aniseed.core))
+(local str (require :aniseed.string))
+(local ts (require :treesitter))
 
-(defn ifilter [pred iter]
+(fn ifilter [pred iter]
   (let [result []]
     (each [i iter]
       (if (pred i)
         (table.insert result i)))
     result))
 
-(defn split-lines [s]
+(fn split-lines [s]
   (str.split s "\n"))
 
-(defn get-lines [start-row end-row]
+(fn get-lines [start-row end-row]
   (vim.api.nvim_buf_get_lines 0 start-row end-row true))
 
-(defn get-all-lines []
+(fn get-all-lines []
   (let [lines (vim.api.nvim_buf_get_lines 0 0 (vim.api.nvim_buf_line_count 0) false)]
     (table.concat lines "\n")))
 
-(defn get-current-line []
+(fn get-current-line []
   (vim.api.nvim_get_current_line))
 
-(defn set-lines! [start-row end-row lines]
+(fn set-lines! [start-row end-row lines]
   (vim.api.nvim_buf_set_lines 0 start-row end-row true lines))
 
-(defn get-cursor []
+(fn get-cursor []
   (vim.api.nvim_win_get_cursor 0))
 
-(defn set-cursor! [row col]
+(fn set-cursor! [row col]
   (vim.api.nvim_win_set_cursor 0 [row col]))
 
-(defn update-line! [f]
+(fn update-line! [f]
   (let [[row] (vim.api.nvim_win_get_cursor 0)
         [line] (get-lines (a.dec row) row)
         (replacement) (f line)]
     (set-lines! (a.dec row) row [replacement])))
 
-(defn update-all-lines! [f]
+(fn update-all-lines! [f]
   (let [lines (get-lines 0 -1)]
     (each [i line (ipairs lines)]
       (tset lines i (or (f line) line)))
     (set-lines! 0 -1 lines)))
 
-(defn insert-mode! []
+(fn insert-mode! []
   (vim.cmd "startinsert"))
 
-(defn repeatable [nm cmd]
+(fn repeatable [nm cmd]
    (vim.keymap.set :n (.. "<Plug>(" nm ")") (.. cmd ":silent! call repeat#set(\"\\<Plug>(" nm ")\")<CR>")))
 
-(defn update-file-and-move-cursor! [f]
+(fn update-file-and-move-cursor! [f]
   (let [line-count (vim.api.nvim_buf_line_count 0)
         [row col] (vim.api.nvim_win_get_cursor 0)]
     (f)
@@ -58,35 +57,35 @@
           diff (- new-line-count line-count)]
       (vim.api.nvim_win_set_cursor 0 [(+ row diff) col]))))
 
-(defn indent-at-line [row]
+(fn indent-at-line [row]
   (let [[line] (get-lines (a.dec row) row)]
     (string.match line "(%s+)")))
 
-(defn insert-lines-at! [[row col] lines]
+(fn insert-lines-at! [[row col] lines]
   (set-lines! row row lines))
 
-(defn insert-lines! [lines]
+(fn insert-lines! [lines]
   (insert-lines-at! (get-cursor) lines))
 
-(defn insert-line-at-location! [row line indent]
+(fn insert-line-at-location! [row line indent]
   (insert-lines-at! [(a.dec row) 0] [(.. indent line)]))
 
-(defn insert-line-before-cursor! [line]
+(fn insert-line-before-cursor! [line]
   (let [[row] (vim.api.nvim_win_get_cursor 0)]
     (insert-line-at-location! row line (indent-at-line row))))
 
-(defn insert-line-after-cursor! [line]
+(fn insert-line-after-cursor! [line]
   (let [[row] (vim.api.nvim_win_get_cursor 0)]
     (insert-line-at-location! (a.inc row) line
                               (or (indent-at-line (a.inc row))
                                   (indent-at-line row)))))
 
-(defn insert-line-before-mark! [mark line]
+(fn insert-line-before-mark! [mark line]
   (let [[row] (vim.api.nvim_buf_get_mark 0 mark)]
     (insert-line-at-location! row line (indent-at-line row))))
 
 ; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
-(defn visual-selection []
+(fn visual-selection []
   (let [s-start (vim.fn.getpos "'<")
         s-end (vim.fn.getpos "'>")
         n-lines (+ (math.abs (- (. s-end 2) (. s-start 2))) 1)
@@ -98,3 +97,33 @@
                         (+ (- (. s-end 3) (. s-start 3)) 1)))
       (tset lines n-lines (string.sub (. lines n-lines) 1 (. s-end 3))))
     (table.concat lines "\n")))
+
+(fn distinct [coll]
+  (let [items []
+        seen {}]
+    (each [_ item (ipairs coll)]
+      (when (not (. seen item))
+        (table.insert items item)
+        (tset seen item true)))
+    items))
+
+{: ifilter
+ : split-lines
+ : get-lines
+ : get-all-lines
+ : get-current-line
+ : set-lines!
+ : get-cursor
+ : update-line!
+ : update-all-lines!
+ : insert-mode!
+ : repeatable
+ : update-file-and-move-cursor!
+ : indent-at-line
+ : insert-lines!
+ : insert-line-at-location!
+ : insert-line-before-cursor!
+ : insert-line-after-cursor!
+ : insert-line-before-mark!
+ : visual-selection
+ : distinct}
