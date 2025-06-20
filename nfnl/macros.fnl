@@ -39,6 +39,12 @@
      ,cmds
      ,group))
 
+(fn with-reload [& body]
+  `(do
+     (nvim.ex.write)
+     ,(unpack body)
+     (_G.reload_keep_view)))
+
 {: autocmd
  : autocmds
  : augroup
@@ -46,4 +52,5 @@
  : defcmd0
  : defcmd1
  : defcmd*
- : defcmd+}
+ : defcmd+
+ : with-reload}
