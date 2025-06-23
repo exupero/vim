@@ -1,3 +1,5 @@
+(local a (require :aniseed.core))
+
 (fn async-shell [cmd input]
   (let [buf (vim.api.nvim_create_buf false true)]
     (vim.cmd "vertical new")
@@ -13,7 +15,6 @@
                     :stderr_buffered false
                     :on_stdout (fn [_ data _]
                                  (when data
-                                   (print (vim.inspect data))
                                    (if (= [""] data)
                                      (vim.api.nvim_buf_set_lines buf -1 -1 false [""])
                                      (let [[part & parts] data
