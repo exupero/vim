@@ -19,7 +19,7 @@
                            (binding [clojure.test/*test-out* *out*]
                              (com.mjdowney.rich-comment-tests/run-ns-tests! *ns*)))"}))
 
-(defcmd ToggleParinfer {:nargs 0} [_]
+(defcmd ParinferToggle {:nargs 0} [_]
   (if (= vim.g.parinfer_mode "smart")
     (tset vim.g :parinfer_mode "paren")
     (tset vim.g :parinfer_mode "smart")))
@@ -53,7 +53,7 @@
 (vim.keymap.set :n :<LocalLeader>c ":ConjureConnect<CR>")
 (vim.keymap.set :n :<LocalLeader>ls ":ConjureLogHPane<CR>")
 (vim.keymap.set :n :<LocalLeader>lv ":ConjureLogVPane<CR>")
-(vim.keymap.set :n :<LocalLeader>p ":ToggleParinfer<CR>")
+(vim.keymap.set :n :<LocalLeader>p ":ParinferToggle<CR>")
 (vim.keymap.set :n :<LocalLeader>t ":TestFile<CR>")
 (vim.keymap.set :n :<LocalLeader>u ":UpdateRequires<CR>")
 
