@@ -1,13 +1,13 @@
 (local a (require :aniseed.core))
 
-(fn async-shell [cmd input]
+(fn async-shell [cmd input filetype]
   (let [buf (vim.api.nvim_create_buf false true)]
     (vim.cmd "vertical new")
     (vim.api.nvim_win_set_buf 0 buf)
     (doto buf
       (vim.api.nvim_buf_set_option :buftype :nofile)
       (vim.api.nvim_buf_set_option :bufhidden :wipe)
-      (vim.api.nvim_buf_set_option :filetype :markdown))
+      (vim.api.nvim_buf_set_option :filetype filetype))
     (let [job-id (vim.fn.jobstart cmd
                    {:stdin :pipe
                     :stdout_buffered false
