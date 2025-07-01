@@ -7,8 +7,7 @@
     (doto buf
       (vim.api.nvim_buf_set_option :buftype :nofile)
       (vim.api.nvim_buf_set_option :bufhidden :wipe)
-      (vim.api.nvim_buf_set_option :filetype :markdown)
-      (vim.api.nvim_buf_set_name "LLM output"))
+      (vim.api.nvim_buf_set_option :filetype :markdown))
     (let [job-id (vim.fn.jobstart cmd
                    {:stdin :pipe
                     :stdout_buffered false
