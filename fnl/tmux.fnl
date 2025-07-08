@@ -31,8 +31,16 @@
 (fn ensure-not-copy-mode [target]
   (tmux* :send :-t target :-X :cancel))
 
+(fn other-pane []
+  (-> (tmux*-lines :list-panes :-F "#{pane_active} #{pane_index}")
+      (->> (a.remove #(string.find $1 "^1")))
+      a.first
+      (str.split " ")
+      a.second))
+
 {: ensure-not-copy-mode
  : ensure-not-zoomed
+ : other-pane
  : send
  : submit
  : switch-to
