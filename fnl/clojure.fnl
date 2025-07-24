@@ -48,8 +48,8 @@
   (u.update-file-and-move-cursor! #(vim.fn.execute "%!update-requires"))
   (eval-query-match! "((source (list_lit . value: (sym_lit) @f) @eval) (#any-of? @f \"ns\" \"deps/add-deps\" \"require\"))"))
 
-(tset vim.g :conjure#mapping#log_split "")
-(tset vim.g :conjure#mapping#log_vsplit "")
+(tset vim.g :conjure#mapping#log_split "__ls")
+(tset vim.g :conjure#mapping#log_vsplit "__lv")
 (vim.keymap.set :n :<LocalLeader>c ":ConjureConnect<CR>")
 (vim.keymap.set :n :<LocalLeader>ls ":ConjureLogHPane<CR>")
 (vim.keymap.set :n :<LocalLeader>lv ":ConjureLogVPane<CR>")
