@@ -25,8 +25,10 @@
        (not= nil)))
 
 (fn ensure-not-zoomed [target]
-  (when (zoomed? target)
-    (tmux* :resize-pane :-t target :Z)))
+  (tmux* :if-shell :-t target
+         "#{?#{m:*Z*,#F},true,false}"
+         (.. "resize-pane -t " target " -Z")
+         ""))
 
 (fn ensure-not-copy-mode [target]
   (tmux* :send :-t target :-X :cancel))
