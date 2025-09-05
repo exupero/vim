@@ -19,7 +19,7 @@ Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'jiangmiao/auto-pairs', { 'tag': 'v2.0.0' }
 Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
-Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'python'], 'tag': 'v4.55.0' }
+Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy'], 'tag': 'v4.55.0' }
 Plug 'bakpakin/janet.vim', { 'for': 'janet' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
@@ -40,7 +40,7 @@ Plug 'fcharlier/openssl.vim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
 Plug 'neovim/nvim-lspconfig'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jparise/vim-graphql'
 Plug 'subnut/nvim-ghost.nvim'
