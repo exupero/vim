@@ -1,4 +1,4 @@
-let b:ale_linters = ['ruff']
+" let b:ale_linters = ['ruff']
 
 set nonumber
 set colorcolumn=0
