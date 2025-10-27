@@ -46,12 +46,13 @@ Plug 'jparise/vim-graphql'
 Plug 'subnut/nvim-ghost.nvim'
 Plug 'gpanders/vim-medieval'
 Plug 'github/copilot.vim'
+Plug 'lewis6991/gitsigns.nvim'
 
 " Fennel-related
 Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
 " Plug 'atweiden/vim-fennel'
 Plug 'Olical/nfnl'
-Plug 'Olical/aniseed'
+Plug 'Olical/aniseed', { 'tag': 'v3.33.0' }
 " Install instructions for these don't include Plug, so I'm not sure what exactly nedes to be done...
 " Plug 'udayvir-singh/tangerine.nvim'
 " Plug 'udayvir-singh/hibiscus.nvim'
