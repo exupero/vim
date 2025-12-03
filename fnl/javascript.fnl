@@ -90,20 +90,3 @@
 
 (defcmd JavascriptLogSelectionBeforeMark {:nargs 1 :range true} [{:args mark}]
   (u.insert-line-before-mark! mark (logging-code (u.visual-selection))))
-
-; Keymappings
-
-(vim.keymap.set :n :<e "<Plug>(move-node-back)")
-(vim.keymap.set :n :>e "<Plug>(move-node-forward)")
-(vim.keymap.set :n :<I ":call JavascriptInsertBefore()<CR>")
-(vim.keymap.set :n :>I ":call JavascriptInsertAfter()<CR>")
-
-(vim.keymap.set :n :<Leader>c ":JavascriptLogWordBeforeCursor<CR>")
-(vim.keymap.set :n :<Leader>d ":JavascriptLogWordBeforeMark u<CR>")
-(vim.keymap.set :n :<Leader>w ":JavascriptLogWordAfterCursor<CR>")
-(vim.keymap.set :n :<Leader>l ":call JavascriptLogAfter(expand('<cword>'))<CR>")
-
-(vim.keymap.set :v :<Leader>c ":JavascriptLogSelectionBeforeCursor<CR>")
-(vim.keymap.set :v :<Leader>d ":JavascriptLogSelectionBeforeMark u<CR>")
-(vim.keymap.set :v :<Leader>w ":JavascriptLogSelectionAfterCursor<CR>")
-(vim.keymap.set :v :<Leader>l ":call JavascriptLogAfter(VisualSelection())<CR>")

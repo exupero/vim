@@ -189,20 +189,3 @@
 
 (defcmd PythonLogSelectionBeforeMark {:nargs 1 :range true} [{:args mark}]
   (u.insert-line-before-mark! mark (logging-code (u.visual-selection))))
-
-; Keymappings
-
-(vim.keymap.set :n :<e "<Plug>(move-node-back)")
-(vim.keymap.set :n :>e "<Plug>(move-node-forward)")
-(vim.keymap.set :n :<I ":call PythonInsertBefore()<CR>")
-(vim.keymap.set :n :>I ":call PythonInsertAfter()<CR>")
-
-(vim.keymap.set :n :<Leader>c ":PythonLogWordBeforeCursor<CR>")
-(vim.keymap.set :n :<Leader>d ":PythonLogWordBeforeMark u<CR>")
-(vim.keymap.set :n :<Leader>w ":PythonLogWordAfterCursor<CR>")
-(vim.keymap.set :n :<Leader>l ":call PythonLogAfter(expand('<cword>'))<CR>")
-
-(vim.keymap.set :v :<Leader>c ":PythonLogSelectionBeforeCursor<CR>")
-(vim.keymap.set :v :<Leader>d ":PythonLogSelectionBeforeMark u<CR>")
-(vim.keymap.set :v :<Leader>w ":PythonLogSelectionAfterCursor<CR>")
-(vim.keymap.set :v :<Leader>l ":call PythonLogAfter(VisualSelection())<CR>")
