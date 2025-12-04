@@ -1,6 +1,8 @@
-nnoremap <LocalLeader>cf :?^diff?,/^diff/-1y<CR>
-nnoremap <LocalLeader>dc :.,/^@@\\|^diff/-1d<CR>
-nnoremap <LocalLeader>df :?^diff?,/^diff/-1d<CR>
+lua require('diff')
+
+nnoremap <LocalLeader>cf :DiffCopyCurrentFile<CR>
+nnoremap <LocalLeader>dc :DiffDeleteCurrentChunk<CR>
+nnoremap <LocalLeader>df :DiffDeleteCurrentFile<CR>
 
 nnoremap [c :?^@@?<CR>
 nnoremap ]c :/^@@/<CR>

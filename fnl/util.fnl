@@ -107,6 +107,28 @@
         (tset seen item true)))
     items))
 
+(fn folds []
+  (let [fs []]
+    (for [line 1 (vim.fn.line :$)]
+      (if (not= -1 (vim.fn.foldclosed line))
+        (table.insert fs line)))
+    fs))
+
+(fn set-folds! [folds]
+  (vim.cmd "normal! zR")
+  (each [_ line (ipairs folds)]
+    (if (not= -1 (vim.fn.foldclosed line))
+      (vim.fn.cursor line 1)
+      (vim.cmd "normal! zc"))))
+
+; Use _G so it can be accessed by a macro
+(fn _G.reload_keep_view []
+  (let [view (vim.fn.winsaveview)
+        fs (folds)]
+    (vim.fn.execute "edit")
+    (set-folds! fs)
+    (vim.fn.winrestview view)))
+
 {: ifilter
  : split-lines
  : get-lines
@@ -114,6 +136,7 @@
  : get-current-line
  : set-lines!
  : get-cursor
+ : set-cursor!
  : update-line!
  : update-all-lines!
  : insert-mode!
