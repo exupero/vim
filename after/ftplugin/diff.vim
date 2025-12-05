@@ -1,8 +1,9 @@
 lua require('diff')
 
-nnoremap <LocalLeader>cf :DiffCopyCurrentFile<CR>
-nnoremap <LocalLeader>dc :DiffDeleteCurrentChunk<CR>
-nnoremap <LocalLeader>df :DiffDeleteCurrentFile<CR>
+nnoremap <LocalLeader>cd <Plug>(diff-chunk-delete)
+nnoremap <LocalLeader>fc <Plug>(diff-file-copy)
+nnoremap <LocalLeader>fd <Plug>(diff-file-delete)
+nnoremap <LocalLeader>fo <Plug>(diff-file-open)
 
 nnoremap [c :?^@@?<CR>
 nnoremap ]c :/^@@/<CR>

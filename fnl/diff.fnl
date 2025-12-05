@@ -1,6 +1,7 @@
 (import-macros {: defcmd : defcmd0 : defcmd1} :macros)
 
 (local a (require :aniseed.core))
+(local nvim (require :aniseed.nvim))
 (local u (require :util))
 
 (fn find [start dir pred]
@@ -26,20 +27,30 @@
 (fn chunk-start? [line]
   (string.match line "^@@"))
 
-(defcmd0 DiffCopyCurrentFile []
-  (let [start (find-backwards (vim.fn.line :.) file-start?)
-        end (find-forwards (a.inc start) file-start?)
-        lines (u.get-lines start (a.dec end))]
-    (vim.fn.setreg :0 lines :l)))
-
-(defcmd0 DiffDeleteCurrentChunk []
+(defcmd0 DiffChunkDelete []
   (let [start (find-backwards (vim.fn.line :.) chunk-start?)
         end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))]
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! start 0)))
+(u.repeatable :diff-chunk-delete ":DiffChunkDelete<CR>")
 
-(defcmd0 DiffDeleteCurrentFile []
+(defcmd0 DiffFileCopy []
+  (let [start (find-backwards (vim.fn.line :.) file-start?)
+        end (find-forwards (a.inc start) file-start?)
+        lines (u.get-lines (a.dec start) (a.dec end))]
+    (vim.fn.setreg "\"" lines :l)))
+(u.repeatable :diff-file-copy ":DiffFileCopy<CR>")
+
+(defcmd0 DiffFileDelete []
   (let [start (find-backwards (vim.fn.line :.) file-start?)
         end (find-forwards (a.inc start) file-start?)]
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! start 0)))
+(u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
+
+(defcmd0 DiffFileOpen []
+  (let [start (find-backwards (vim.fn.line :.) file-start?)
+        line (vim.fn.getline start)
+        filename (string.match line "^diff %-%-git a/%S+ b/(%S+)$")]
+    (nvim.ex.tabnew filename)))
+(u.repeatable :diff-file-open ":DiffFileOpen<CR>")
