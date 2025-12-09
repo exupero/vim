@@ -85,6 +85,12 @@
     (insert-line-at-location! row line (indent-at-line row))))
 
 ; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
+(fn visual-lines []
+  (let [s-start (vim.fn.getpos "'<")
+        s-end (vim.fn.getpos "'>")
+        n-lines (+ (math.abs (- (. s-end 2) (. s-start 2))) 1)]
+    (vim.api.nvim_buf_get_lines 0 (- (. s-start 2) 1) (. s-end 2) false)))
+
 (fn visual-selection []
   (let [s-start (vim.fn.getpos "'<")
         s-end (vim.fn.getpos "'>")
@@ -148,5 +154,6 @@
  : insert-line-before-cursor!
  : insert-line-after-cursor!
  : insert-line-before-mark!
+ : visual-lines
  : visual-selection
  : distinct}

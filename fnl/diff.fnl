@@ -27,6 +27,25 @@
 (fn chunk-start? [line]
   (string.match line "^@@"))
 
+(fn _G.diff_fold_level [line]
+  (let [line (vim.fn.getline (or line vim.v.lnum))]
+    (if
+      (file-start? line) :>1
+      (chunk-start? line) :>2
+      :=)))
+
+(fn _G.diff_fold_text []
+  (let [line (vim.fn.getline vim.v.foldstart)
+        count (+ 1 (- vim.v.foldend vim.v.foldstart))
+        level (_G.diff_fold_level vim.v.foldstart)
+        prefix (case level
+                 (where :>1) ""
+                 (where :>2) "▶ "
+                 _  "")]
+    (.. prefix line " (" count " lines)")))
+
+; Commands
+
 (defcmd0 DiffChunkDelete []
   (let [start (find-backwards (vim.fn.line :.) chunk-start?)
         end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))]
@@ -54,3 +73,15 @@
         filename (string.match line "^diff %-%-git a/%S+ b/(%S+)$")]
     (nvim.ex.tabnew filename)))
 (u.repeatable :diff-file-open ":DiffFileOpen<CR>")
+
+(defcmd DiffNote {:range true} []
+  (let [selected (u.visual-lines)
+        [_ start] (vim.fn.getpos "'<")
+        [_ end] (vim.fn.getpos "'>")]
+    (table.insert selected 1 "v")
+    (table.insert selected "^")
+    (table.insert selected "")
+    (table.insert selected "x")
+    (u.set-lines! (a.dec start) end selected)
+    (u.set-cursor! (+ 3 end) 0)
+    (u.insert-mode!)))

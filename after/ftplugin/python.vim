@@ -1,6 +1,8 @@
-set nonumber
-set colorcolumn=0
+setlocal nonumber
+setlocal colorcolumn=0
+
 setlocal foldmethod=indent
+setlocal foldlevel=99
 
 lua require('python')
 
