@@ -64,7 +64,7 @@
   (let [start (find-backwards (vim.fn.line :.) file-start?)
         end (find-forwards (a.inc start) file-start?)]
     (u.set-lines! (a.dec start) (a.dec end) [])
-    (u.set-cursor! (a.dec start) 0)))
+    (u.set-cursor! start 0)))
 (u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
 
 (defcmd0 DiffFileOpen []
