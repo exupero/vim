@@ -16,3 +16,8 @@ nnoremap [c :?^@@?<CR>
 nnoremap ]c :/^@@/<CR>
 nnoremap [d :?^diff?<CR>
 nnoremap ]d :/^diff/<CR>
+
+vnoremap [c :?^@@?<CR>
+vnoremap ]c :/^@@/-1<CR>
+vnoremap [d :?^diff?<CR>
+vnoremap ]d :/^diff/-1<CR>
