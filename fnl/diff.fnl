@@ -48,10 +48,24 @@
 
 (defcmd0 DiffChunkDelete []
   (let [start (find-backwards (vim.fn.line :.) chunk-start?)
-        end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))]
+        end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))
+        lines (u.get-lines (a.dec start) (a.dec end))]
+    (vim.fn.setreg :a lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! start 0)))
 (u.repeatable :diff-chunk-delete ":DiffChunkDelete<CR>")
+
+(defcmd0 DiffChunkOpen []
+  (let [line (vim.fn.line :.)
+        file-start (find-backwards line file-start?)
+        filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
+        chunk-start (find-backwards line chunk-start?)
+        revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
+        diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
+        revised-lines (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        current-line (+ revised-start revised-lines)]
+    (nvim.ex.tabnew (.. :+ (a.dec current-line)) filename)))
+(u.repeatable :diff-chunk-open ":DiffChunkOpen<CR>")
 
 (defcmd0 DiffFileCopy []
   (let [start (find-backwards (vim.fn.line :.) file-start?)
@@ -62,7 +76,9 @@
 
 (defcmd0 DiffFileDelete []
   (let [start (find-backwards (vim.fn.line :.) file-start?)
-        end (find-forwards (a.inc start) file-start?)]
+        end (find-forwards (a.inc start) file-start?)
+        lines (u.get-lines (a.dec start) (a.dec end))]
+    (vim.fn.setreg :a lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! start 0)))
 (u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
@@ -74,7 +90,14 @@
     (nvim.ex.tabnew filename)))
 (u.repeatable :diff-file-open ":DiffFileOpen<CR>")
 
-(defcmd DiffNote {:range true} []
+(defcmd0 DiffNoteLine []
+  (let [line (vim.fn.line :.)
+        content (vim.fn.getline line)]
+    (u.set-lines! (a.dec line) line ["v" content "^" "" "x"])
+    (u.set-cursor! (+ 3 line) 0)
+    (u.insert-mode!)))
+
+(defcmd DiffNoteRange {:range true} []
   (let [selected (u.visual-lines)
         [_ start] (vim.fn.getpos "'<")
         [_ end] (vim.fn.getpos "'>")]
