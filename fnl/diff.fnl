@@ -50,9 +50,9 @@
   (let [start (find-backwards (vim.fn.line :.) chunk-start?)
         end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))
         lines (u.get-lines (a.dec start) (a.dec end))]
-    (vim.fn.setreg :a lines :l)
+    (vim.fn.setreg "" lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
-    (u.set-cursor! start 0)))
+    (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
 (u.repeatable :diff-chunk-delete ":DiffChunkDelete<CR>")
 
 (defcmd0 DiffChunkOpen []
@@ -78,9 +78,9 @@
   (let [start (find-backwards (vim.fn.line :.) file-start?)
         end (find-forwards (a.inc start) file-start?)
         lines (u.get-lines (a.dec start) (a.dec end))]
-    (vim.fn.setreg :a lines :l)
+    (vim.fn.setreg "" lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
-    (u.set-cursor! start 0)))
+    (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
 (u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
 
 (defcmd0 DiffFileOpen []
