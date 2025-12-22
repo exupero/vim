@@ -62,10 +62,24 @@
         chunk-start (find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
         diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
-        revised-lines (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
-        current-line (+ revised-start revised-lines)]
+        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        current-line (+ revised-start revised-line-count)]
     (nvim.ex.tabnew (.. :+ (a.dec current-line)) filename)))
 (u.repeatable :diff-chunk-open ":DiffChunkOpen<CR>")
+
+(defcmd0 DiffChunkTrim []
+  (let [line (vim.fn.line :.)
+        chunk-start (find-backwards line chunk-start?)
+        (marker original-start original-count revised-start revised-count) (string.match (vim.fn.getline chunk-start) "^@@ (%-(%d+),(%d+) %+(%d+),(%d+)) @@")
+        diff-lines (u.get-lines chunk-start (a.dec line))
+        original-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        chunk-line (.. "@@ -" (+ original-start original-line-count) "," (math.max 0 (- original-count original-line-count))
+                       " +" (+ revised-start revised-line-count) "," (- revised-count revised-line-count)
+                       " @@ (was " marker ")")]
+    (u.set-lines! (a.dec chunk-start) (a.dec line) [chunk-line])
+    (u.set-cursor! (a.inc chunk-start) 0)))
+(u.repeatable :diff-chunk-trim ":DiffChunkTrim<CR>")
 
 (defcmd0 DiffFileCopy []
   (let [start (find-backwards (vim.fn.line :.) file-start?)
