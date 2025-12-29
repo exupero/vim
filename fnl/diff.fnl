@@ -67,16 +67,33 @@
     (nvim.ex.tabnew (.. :+ (a.dec current-line)) filename)))
 (u.repeatable :diff-chunk-open ":DiffChunkOpen<CR>")
 
+(fn parse-chunk-header [line]
+  (case (string.match line "^@@ %-(%d+),(%d+) %+(%d+),(%d+) @@ %(was (.+)%)")
+    (original-start original-count revised-start revised-count original-marker)
+    {:original-marker original-marker
+     :original-start (tonumber original-start)
+     :original-count (tonumber original-count)
+     :revised-start (tonumber revised-start)
+     :revised-count (tonumber revised-count)}
+    nil (case (string.match line "^@@ (%-(%d+),(%d+) %+(%d+),(%d+)) @@")
+          (original-marker original-start original-count revised-start revised-count)
+          {:original-marker original-marker
+           :original-start (tonumber original-start)
+           :original-count (tonumber original-count)
+           :revised-start (tonumber revised-start)
+           :revised-count (tonumber revised-count)}
+          nil nil)))
+
 (defcmd0 DiffChunkTrim []
   (let [line (vim.fn.line :.)
         chunk-start (find-backwards line chunk-start?)
-        (marker original-start original-count revised-start revised-count) (string.match (vim.fn.getline chunk-start) "^@@ (%-(%d+),(%d+) %+(%d+),(%d+)) @@")
+        {: original-marker : original-start : original-count : revised-start : revised-count } (parse-chunk-header (vim.fn.getline chunk-start))
         diff-lines (u.get-lines chunk-start (a.dec line))
         original-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
         revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
         chunk-line (.. "@@ -" (+ original-start original-line-count) "," (math.max 0 (- original-count original-line-count))
                        " +" (+ revised-start revised-line-count) "," (- revised-count revised-line-count)
-                       " @@ (was " marker ")")]
+                       " @@ (was " original-marker ")")]
     (u.set-lines! (a.dec chunk-start) (a.dec line) [chunk-line])
     (u.set-cursor! (a.inc chunk-start) 0)))
 (u.repeatable :diff-chunk-trim ":DiffChunkTrim<CR>")
