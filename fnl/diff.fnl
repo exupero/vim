@@ -4,23 +4,6 @@
 (local nvim (require :aniseed.nvim))
 (local u (require :util))
 
-(fn find [start dir pred]
-  (let [max (vim.fn.line :$)]
-    (var line start)
-    (var found false)
-    (while (and (not found) (< 0 line (a.inc max)))
-      (let [content (vim.fn.getline line)]
-        (if (pred content)
-          (set found true)
-          (set line (dir line)))))
-    line))
-
-(fn find-backwards [start pred]
-  (find start a.dec pred))
-
-(fn find-forwards [start pred]
-  (find start a.inc pred))
-
 (fn file-start? [line]
   (string.match line "^diff"))
 
@@ -47,8 +30,8 @@
 ; Commands
 
 (defcmd0 DiffChunkDelete []
-  (let [start (find-backwards (vim.fn.line :.) chunk-start?)
-        end (find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))
+  (let [start (u.find-backwards (vim.fn.line :.) chunk-start?)
+        end (u.find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))
         lines (u.get-lines (a.dec start) (a.dec end))]
     (vim.fn.setreg "" lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
@@ -57,9 +40,9 @@
 
 (defcmd0 DiffChunkOpen []
   (let [line (vim.fn.line :.)
-        file-start (find-backwards line file-start?)
+        file-start (u.find-backwards line file-start?)
         filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
-        chunk-start (find-backwards line chunk-start?)
+        chunk-start (u.find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
         diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
         revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
@@ -86,7 +69,7 @@
 
 (defcmd0 DiffChunkTrim []
   (let [line (vim.fn.line :.)
-        chunk-start (find-backwards line chunk-start?)
+        chunk-start (u.find-backwards line chunk-start?)
         {: original-marker : original-start : original-count : revised-start : revised-count } (parse-chunk-header (vim.fn.getline chunk-start))
         diff-lines (u.get-lines chunk-start (a.dec line))
         original-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
@@ -99,15 +82,15 @@
 (u.repeatable :diff-chunk-trim ":DiffChunkTrim<CR>")
 
 (defcmd0 DiffFileCopy []
-  (let [start (find-backwards (vim.fn.line :.) file-start?)
-        end (find-forwards (a.inc start) file-start?)
+  (let [start (u.find-backwards (vim.fn.line :.) file-start?)
+        end (u.find-forwards (a.inc start) file-start?)
         lines (u.get-lines (a.dec start) (a.dec end))]
     (vim.fn.setreg "\"" lines :l)))
 (u.repeatable :diff-file-copy ":DiffFileCopy<CR>")
 
 (defcmd0 DiffFileDelete []
-  (let [start (find-backwards (vim.fn.line :.) file-start?)
-        end (find-forwards (a.inc start) file-start?)
+  (let [start (u.find-backwards (vim.fn.line :.) file-start?)
+        end (u.find-forwards (a.inc start) file-start?)
         lines (u.get-lines (a.dec start) (a.dec end))]
     (vim.fn.setreg "" lines :l)
     (u.set-lines! (a.dec start) (a.dec end) [])
@@ -115,7 +98,7 @@
 (u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
 
 (defcmd0 DiffFileOpen []
-  (let [start (find-backwards (vim.fn.line :.) file-start?)
+  (let [start (u.find-backwards (vim.fn.line :.) file-start?)
         line (vim.fn.getline start)
         filename (string.match line "^diff %-%-git a/%S+ b/(%S+)$")]
     (nvim.ex.tabnew filename)))

@@ -135,6 +135,23 @@
     (set-folds! fs)
     (vim.fn.winrestview view)))
 
+(fn find [start dir pred]
+  (let [max (vim.fn.line :$)]
+    (var line start)
+    (var found false)
+    (while (and (not found) (< 0 line (a.inc max)))
+      (let [content (vim.fn.getline line)]
+        (if (pred content)
+          (set found true)
+          (set line (dir line)))))
+    line))
+
+(fn find-backwards [start pred]
+  (find start a.dec pred))
+
+(fn find-forwards [start pred]
+  (find start a.inc pred))
+
 {: ifilter
  : split-lines
  : get-lines
@@ -156,4 +173,7 @@
  : insert-line-before-mark!
  : visual-lines
  : visual-selection
- : distinct}
+ : distinct
+ : find
+ : find-backwards
+ : find-forwards}
