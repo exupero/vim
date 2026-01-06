@@ -50,6 +50,22 @@
     (nvim.ex.tabnew (.. :+ (a.dec current-line)) filename)))
 (u.repeatable :diff-chunk-open ":DiffChunkOpen<CR>")
 
+(fn comments? [lines]
+  (a.some #(string.match $1 "^v$") lines))
+
+(defcmd1 DiffChunkMove [{:args dest}]
+  (let [file-start (u.find-backwards (vim.fn.line :.) file-start?)
+        start (u.find-backwards (vim.fn.line :.) chunk-start?)
+        end (u.find-forwards (a.inc start) #(or (chunk-start? $1) (file-start? $1)))
+        lines (u.get-lines (a.dec start) (a.dec end))]
+    (when (comments? lines)
+      (let [header-lines (u.get-lines (a.dec file-start) (+ 3 file-start))
+            lines (a.concat header-lines lines)]
+        (vim.fn.writefile lines dest :a)))
+    (u.set-lines! (a.dec start) (a.dec end) [])
+    (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
+(u.repeatable :diff-chunk-move-to-commented ":DiffChunkMove .commented.diff<CR>")
+
 (fn parse-chunk-header [line]
   (case (string.match line "^@@ %-(%d+),(%d+) %+(%d+),(%d+) @@ %(was (.+)%)")
     (original-start original-count revised-start revised-count original-marker)
@@ -97,6 +113,16 @@
     (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
 (u.repeatable :diff-file-delete ":DiffFileDelete<CR>")
 
+(defcmd1 DiffFileMove [{:args dest}]
+  (let [start (u.find-backwards (vim.fn.line :.) file-start?)
+        end (u.find-forwards (a.inc start) file-start?)
+        lines (u.get-lines (a.dec start) (a.dec end))]
+    (when (comments? lines)
+      (vim.fn.writefile lines dest :a))
+    (u.set-lines! (a.dec start) (a.dec end) [])
+    (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
+(u.repeatable :diff-file-move-to-commented ":DiffFileMove .commented.diff<CR>")
+
 (defcmd0 DiffFileOpen []
   (let [start (u.find-backwards (vim.fn.line :.) file-start?)
         line (vim.fn.getline start)
@@ -107,6 +133,7 @@
 (defcmd0 DiffNoteLine []
   (let [line (vim.fn.line :.)
         content (vim.fn.getline line)]
+    (vim.fn.setreg "" [content] :l)
     (u.set-lines! (a.dec line) line ["v" content "^" "" "x"])
     (u.set-cursor! (+ 3 line) 0)
     (u.insert-mode!)))
@@ -114,11 +141,9 @@
 (defcmd DiffNoteRange {:range true} []
   (let [selected (u.visual-lines)
         [_ start] (vim.fn.getpos "'<")
-        [_ end] (vim.fn.getpos "'>")]
-    (table.insert selected 1 "v")
-    (table.insert selected "^")
-    (table.insert selected "")
-    (table.insert selected "x")
-    (u.set-lines! (a.dec start) end selected)
+        [_ end] (vim.fn.getpos "'>")
+        lines (a.concat ["v"] selected ["^" "" "x"])]
+    (vim.fn.setreg "" selected :l)
+    (u.set-lines! (a.dec start) end lines)
     (u.set-cursor! (+ 3 end) 0)
     (u.insert-mode!)))
