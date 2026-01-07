@@ -134,6 +134,8 @@
   (let [line (vim.fn.line :.)
         content (vim.fn.getline line)]
     (vim.fn.setreg "" [content] :l)
+    ; Back up in case we want it after editing something
+    (vim.fn.setreg :a [content] :l)
     (u.set-lines! (a.dec line) line ["v" content "^" "" "x"])
     (u.set-cursor! (+ 3 line) 0)
     (u.insert-mode!)))
@@ -144,6 +146,8 @@
         [_ end] (vim.fn.getpos "'>")
         lines (a.concat ["v"] selected ["^" "" "x"])]
     (vim.fn.setreg "" selected :l)
+    ; Back up in case we want it after editing something
+    (vim.fn.setreg :a selected :l)
     (u.set-lines! (a.dec start) end lines)
     (u.set-cursor! (+ 3 end) 0)
     (u.insert-mode!)))
