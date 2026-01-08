@@ -7,7 +7,7 @@ setlocal foldlevel=99
 
 nnoremap <LocalLeader>cd <Plug>(diff-chunk-move-to-commented)
 nnoremap <LocalLeader>co <Plug>(diff-chunk-open)
-nnoremap <LocalLeader>ct <Plug>(diff-chunk-trim)
+nnoremap <LocalLeader>ct <Plug>(diff-chunk-move-to-commented-trim)
 nnoremap <LocalLeader>fc <Plug>(diff-file-copy)
 nnoremap <LocalLeader>fd <Plug>(diff-file-move-to-commented)
 nnoremap <LocalLeader>fo <Plug>(diff-file-open)

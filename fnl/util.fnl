@@ -44,7 +44,7 @@
     (set-lines! 0 -1 lines)))
 
 (fn insert-mode! []
-  (vim.cmd "startinsert"))
+  (vim.cmd :startinsert))
 
 (fn repeatable [nm cmd]
    (vim.keymap.set :n (.. "<Plug>(" nm ")") (.. cmd ":silent! call repeat#set(\"\\<Plug>(" nm ")\")<CR>")))
@@ -84,24 +84,22 @@
   (let [[row] (vim.api.nvim_buf_get_mark 0 mark)]
     (insert-line-at-location! row line (indent-at-line row))))
 
-; https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
 (fn visual-lines []
-  (let [s-start (vim.fn.getpos "'<")
-        s-end (vim.fn.getpos "'>")
-        n-lines (+ (math.abs (- (. s-end 2) (. s-start 2))) 1)]
-    (vim.api.nvim_buf_get_lines 0 (- (. s-start 2) 1) (. s-end 2) false)))
+  (let [[_ start] (vim.fn.getpos "'<")
+        [_ end] (vim.fn.getpos "'>")]
+    (vim.api.nvim_buf_get_lines 0 (- start 1) end false)))
 
 (fn visual-selection []
-  (let [s-start (vim.fn.getpos "'<")
-        s-end (vim.fn.getpos "'>")
-        n-lines (+ (math.abs (- (. s-end 2) (. s-start 2))) 1)
-        lines (vim.api.nvim_buf_get_lines 0 (- (. s-start 2) 1) (. s-end 2) false)]
-    (tset lines 1 (string.sub (. lines 1) (. s-start 3) (- 1)))
+  (let [[_ s-row s-col] (vim.fn.getpos "'<")
+        [_ e-row e-col] (vim.fn.getpos "'>")
+        n-lines (+ (math.abs (- e-row s-row)) 1)
+        lines (vim.api.nvim_buf_get_lines 0 (- s-row 1) e-row false)]
+    (tset lines 1 (string.sub (. lines 1) s-col (- 1)))
     (if (= n-lines 1)
       (tset lines n-lines
             (string.sub (. lines n-lines) 1
-                        (+ (- (. s-end 3) (. s-start 3)) 1)))
-      (tset lines n-lines (string.sub (. lines n-lines) 1 (. s-end 3))))
+                        (+ (- e-col s-col) 1)))
+      (tset lines n-lines (string.sub (. lines n-lines) 1 e-col)))
     (table.concat lines "\n")))
 
 (fn distinct [coll]

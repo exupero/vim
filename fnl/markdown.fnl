@@ -7,6 +7,8 @@
 (defcmd0 MdChunkOpen []
   (let [content (vim.fn.getline (vim.fn.line :.))
         (filename line) (string.match content "^```diff (%S+) %-%d+ %+(%d+)$")]
-    (print (vim.inspect m))
     (nvim.ex.tabnew (.. :+ line) filename)))
 (u.repeatable :md-chunk-open ":MdChunkOpen<CR>")
+
+(defcmd1 MdDiffComments [{:args source}]
+  (vim.fn.execute (.. "read! cat " source " | diff-comments")))

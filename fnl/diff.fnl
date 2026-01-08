@@ -87,15 +87,34 @@
   (let [line (vim.fn.line :.)
         chunk-start (u.find-backwards line chunk-start?)
         {: original-marker : original-start : original-count : revised-start : revised-count } (parse-chunk-header (vim.fn.getline chunk-start))
-        diff-lines (u.get-lines chunk-start (a.dec line))
-        original-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
-        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        lines (u.get-lines chunk-start (a.dec line))
+        original-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
+        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
         chunk-line (.. "@@ -" (+ original-start original-line-count) "," (math.max 0 (- original-count original-line-count))
                        " +" (+ revised-start revised-line-count) "," (- revised-count revised-line-count)
                        " @@ (was " original-marker ")")]
     (u.set-lines! (a.dec chunk-start) (a.dec line) [chunk-line])
     (u.set-cursor! (a.inc chunk-start) 0)))
 (u.repeatable :diff-chunk-trim ":DiffChunkTrim<CR>")
+
+(defcmd1 DiffChunkMoveTrim [{:args dest}]
+  (let [line (vim.fn.line :.)
+        file-start (u.find-backwards line file-start?)
+        chunk-start (u.find-backwards line chunk-start?)
+        {: original-marker : original-start : original-count : revised-start : revised-count } (parse-chunk-header (vim.fn.getline chunk-start))
+        lines (u.get-lines chunk-start (a.dec line))
+        original-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
+        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
+        chunk-line (.. "@@ -" (+ original-start original-line-count) "," (math.max 0 (- original-count original-line-count))
+                       " +" (+ revised-start revised-line-count) "," (- revised-count revised-line-count)
+                       " @@ (was " original-marker ")")]
+    (when (comments? lines)
+      (let [header-lines (u.get-lines (a.dec file-start) (u.find-forwards file-start chunk-start?))
+            lines (a.concat header-lines lines)]
+        (vim.fn.writefile lines dest :a)))
+    (u.set-lines! (a.dec chunk-start) (a.dec line) [chunk-line])
+    (u.set-cursor! (a.inc chunk-start) 0)))
+(u.repeatable :diff-chunk-move-to-commented-trim ":DiffChunkMoveTrim .commented.diff<CR>")
 
 (defcmd0 DiffFileCopy []
   (let [start (u.find-backwards (vim.fn.line :.) file-start?)
