@@ -12,3 +12,12 @@
 
 (defcmd1 MdDiffComments [{:args source}]
   (vim.fn.execute (.. "read! cat " source " | diff-comments")))
+
+(fn heading? [line]
+  (string.match line "^#+ "))
+
+(defcmd0 MdReview [_]
+  (let [start (u.find-backwards (vim.fn.line :.) heading?)
+        lines (u.get-lines start -1)
+        link (vim.fn.system :md-review (table.concat lines "\n"))]
+    (u.set-lines! -1 -1 ["" link])))
