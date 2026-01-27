@@ -47,6 +47,7 @@ Plug 'subnut/nvim-ghost.nvim'
 Plug 'gpanders/vim-medieval'
 Plug 'github/copilot.vim'
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'joonty/vim-do'
 
 " Fennel-related
 Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
