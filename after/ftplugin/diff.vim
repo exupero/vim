@@ -12,6 +12,7 @@ nnoremap <LocalLeader>fc <Plug>(diff-file-copy)
 nnoremap <LocalLeader>fd <Plug>(diff-file-move-to-commented)
 nnoremap <LocalLeader>fo <Plug>(diff-file-open)
 nnoremap <LocalLeader>n :DiffNoteLine<CR>
+nnoremap <LocalLeader>u :DiffCopyUrl<CR>
 
 vnoremap <LocalLeader>n :DiffNoteRange<CR>
 

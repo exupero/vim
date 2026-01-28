@@ -170,3 +170,14 @@
     (u.set-lines! (a.dec start) end lines)
     (u.set-cursor! (+ 3 end) 0)
     (u.insert-mode!)))
+
+(defcmd0 DiffCopyUrl []
+  (let [line (vim.fn.line :.)
+        file-start (u.find-backwards line file-start?)
+        filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
+        chunk-start (u.find-backwards line chunk-start?)
+        revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
+        diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
+        revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
+        current-line (+ revised-start revised-line-count)]
+    (vim.fn.setreg :* (vim.fn.system (.. "gh browse --no-browser " filename ":" current-line)))))
