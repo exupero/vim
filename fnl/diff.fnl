@@ -10,6 +10,16 @@
 (fn chunk-start? [line]
   (string.match line "^@@"))
 
+(fn without-comments [lines]
+  (let [new-lines []]
+    (var comment? false)
+    (each [_ line (pairs lines)]
+      (if
+        (and (not comment?) (string.match line "^v$")) (set comment? true)
+        (and comment? (string.match line "^x$")) (set comment? false)
+        (not comment?) (table.insert new-lines line)))
+    new-lines))
+
 (fn _G.diff_fold_level [line]
   (let [line (vim.fn.getline (or line vim.v.lnum))]
     (if
@@ -44,7 +54,7 @@
         filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
         chunk-start (u.find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
-        diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
+        diff-lines (without-comments (u.get-lines (a.dec chunk-start) (a.dec line)))
         revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
         current-line (+ revised-start revised-line-count)]
     (nvim.ex.tabnew (.. :+ (a.dec current-line)) filename)))
@@ -87,7 +97,7 @@
   (let [line (vim.fn.line :.)
         chunk-start (u.find-backwards line chunk-start?)
         {: original-marker : original-start : original-count : revised-start : revised-count } (parse-chunk-header (vim.fn.getline chunk-start))
-        lines (u.get-lines chunk-start (a.dec line))
+        lines (without-comments (u.get-lines chunk-start (a.dec line)))
         original-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
         revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) lines))
         chunk-line (.. "@@ -" (+ original-start original-line-count) "," (math.max 0 (- original-count original-line-count))
@@ -177,7 +187,7 @@
         filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
         chunk-start (u.find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
-        diff-lines (u.get-lines (a.dec chunk-start) (a.dec line))
+        diff-lines (without-comments (u.get-lines (a.dec chunk-start) (a.dec line)))
         revised-line-count (a.count (a.filter #(not (string.match $1 "^-")) diff-lines))
         current-line (+ revised-start revised-line-count)]
     (vim.fn.setreg :* (vim.fn.system (.. "gh browse --no-browser " filename ":" current-line)))))

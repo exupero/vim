@@ -20,4 +20,4 @@
   (let [start (u.find-backwards (vim.fn.line :.) heading?)
         lines (u.get-lines start -1)
         link (vim.fn.system :md-review (table.concat lines "\n"))]
-    (u.set-lines! -1 -1 ["" link])))
+    (print link)))
