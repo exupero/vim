@@ -74,7 +74,7 @@
         (vim.fn.writefile lines dest :a)))
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
-(u.repeatable :diff-chunk-move-to-commented ":DiffChunkMove .commented.diff<CR>")
+(u.repeatable :diff-chunk-move-to-commented ":DiffChunkMove .task/commented.diff<CR>")
 
 (fn parse-chunk-header [line]
   (case (string.match line "^@@ %-(%d+),(%d+) %+(%d+),(%d+) @@ %(was (.+)%)")
@@ -124,7 +124,7 @@
         (vim.fn.writefile lines dest :a)))
     (u.set-lines! (a.dec chunk-start) (a.dec line) [chunk-line])
     (u.set-cursor! (a.inc chunk-start) 0)))
-(u.repeatable :diff-chunk-move-to-commented-trim ":DiffChunkMoveTrim .commented.diff<CR>")
+(u.repeatable :diff-chunk-move-to-commented-trim ":DiffChunkMoveTrim .task/commented.diff<CR>")
 
 (defcmd0 DiffFileCopy []
   (let [start (u.find-backwards (vim.fn.line :.) file-start?)
@@ -150,7 +150,7 @@
       (vim.fn.writefile lines dest :a))
     (u.set-lines! (a.dec start) (a.dec end) [])
     (u.set-cursor! (math.min start (vim.fn.line :$)) 0)))
-(u.repeatable :diff-file-move-to-commented ":DiffFileMove .commented.diff<CR>")
+(u.repeatable :diff-file-move-to-commented ":DiffFileMove .task/commented.diff<CR>")
 
 (defcmd0 DiffFileOpen []
   (let [start (u.find-backwards (vim.fn.line :.) file-start?)
