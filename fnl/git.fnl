@@ -6,7 +6,10 @@
     dir))
 
 (fn repo-path [path]
-  (str.trim (vim.fn.system (.. "git path " path))))
+  (let [path (-> path
+                 (string.gsub "%[" "\\[")
+                 (string.gsub "%]" "\\]"))]
+    (str.trim (vim.fn.system (.. "git path " path)))))
 
 {: root
  : repo-path}
