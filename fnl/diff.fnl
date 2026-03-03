@@ -51,7 +51,7 @@
 (defcmd0 DiffChunkOpen []
   (let [line (vim.fn.line :.)
         file-start (u.find-backwards line file-start?)
-        filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
+        filename (string.match (vim.fn.getline file-start) "^diff %-%-git ./%S+ ./(%S+)$")
         chunk-start (u.find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
         diff-lines (without-comments (u.get-lines (a.dec chunk-start) (a.dec line)))
@@ -155,7 +155,7 @@
 (defcmd0 DiffFileOpen []
   (let [start (u.find-backwards (vim.fn.line :.) file-start?)
         line (vim.fn.getline start)
-        filename (string.match line "^diff %-%-git a/%S+ b/(%S+)$")]
+        filename (string.match line "^diff %-%-git ./%S+ ./(%S+)$")]
     (nvim.ex.tabnew filename)))
 (u.repeatable :diff-file-open ":DiffFileOpen<CR>")
 
@@ -184,7 +184,7 @@
 (defcmd0 DiffCopyUrl []
   (let [line (vim.fn.line :.)
         file-start (u.find-backwards line file-start?)
-        filename (string.match (vim.fn.getline file-start) "^diff %-%-git a/%S+ b/(%S+)$")
+        filename (string.match (vim.fn.getline file-start) "^diff %-%-git ./%S+ ./(%S+)$")
         chunk-start (u.find-backwards line chunk-start?)
         revised-start (string.match (vim.fn.getline chunk-start) "^@@ %-%d+,%d+ %+(%d+),%d+ @@")
         diff-lines (without-comments (u.get-lines (a.dec chunk-start) (a.dec line)))
