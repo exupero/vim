@@ -10,8 +10,8 @@
     (nvim.ex.tabnew (.. :+ line) filename)))
 (u.repeatable :md-chunk-open ":MdChunkOpen<CR>")
 
-(defcmd1 MdDiffComments [{:args source}]
-  (vim.fn.execute (.. "read! cat " source " | diff-comments")))
+(defcmd0 MdDiffComments []
+  (vim.fn.execute (.. "read! cat .task/commented.diff .task/changes.diff | diff-comments")))
 
 (fn heading? [line]
   (string.match line "^#+ "))
