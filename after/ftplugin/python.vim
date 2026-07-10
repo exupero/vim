@@ -3,6 +3,8 @@ setlocal colorcolumn=0
 
 setlocal foldmethod=indent
 setlocal foldlevel=99
+setlocal shiftwidth=4
+setlocal tabstop=4
 
 lua require('python')
 
