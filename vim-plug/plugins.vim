@@ -18,12 +18,10 @@ Plug 'easymotion/vim-easymotion'
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'jiangmiao/auto-pairs', { 'tag': 'v2.0.0' }
-Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'] }
+Plug 'eraserhd/parinfer-rust', { 'for': ['clojure', 'janet', 'fennel', 'hy', 'query'], 'do': 'cargo build --release' }
 Plug 'Olical/conjure', { 'for': ['clojure', 'janet', 'fennel', 'hy'], 'tag': 'v4.55.0' }
 Plug 'bakpakin/janet.vim', { 'for': 'janet' }
-" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-" Plug 'nvim-treesitter/nvim-treesitter-refactor'
-" Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'alvan/vim-closetag'
 Plug 'hylang/vim-hy', { 'for': ['hy'] }
