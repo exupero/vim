@@ -43,7 +43,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jparise/vim-graphql'
 Plug 'subnut/nvim-ghost.nvim'
 Plug 'gpanders/vim-medieval'
-Plug 'github/copilot.vim'
 Plug 'lewis6991/gitsigns.nvim'
 
 " Fennel-related
@@ -54,4 +53,8 @@ Plug 'Olical/aniseed', { 'tag': 'v3.33.0' }
 " Install instructions for these don't include Plug, so I'm not sure what exactly nedes to be done...
 " Plug 'udayvir-singh/tangerine.nvim'
 " Plug 'udayvir-singh/hibiscus.nvim'
+
+" LLM-related
+" Plug 'github/copilot.vim'
+Plug 'goropikari/ollama-completion.nvim'
 call plug#end()
